@@ -1,45 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using Warehouse.Common.DTOs;
 using Warehouse.Data.Models;
 using Warehouse.Interfaces.IRepositories;
 using Warehouse.Interfaces.IServices;
-
-namespace Warehouse.Service.Services
+namespace Warehouse.Service.Services;
+public class UserService : IUserService
 {
-    public class UserService : IUserService
+    private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
+
+    public UserService(IUserRepository userRepository, IMapper mapper)
     {
-        private readonly IUserRepository _userRepository;
+        _userRepository = userRepository;
+        _mapper = mapper;
+    }
 
-        public UserService(IUserRepository userRepository)
-        {
-            _userRepository = userRepository;
-        }
+    public async Task<IEnumerable<DTOUser>> GetAllUsersAsync()
+    {
+        var users = await _userRepository.GetAllUsersAsync();
+        return _mapper.Map<IEnumerable<DTOUser>>(users);  // Mappiamo Users a DTOUser
+    }
 
-        public async Task<IEnumerable<Users>> GetAllUsersAsync()
-        {
-            return await _userRepository.GetAllUsersAsync();
-        }
+    public async Task<DTOUser> GetUserByIdAsync(int id)
+    {
+        var user = await _userRepository.GetUserByIdAsync(id);
+        return _mapper.Map<DTOUser>(user);  // Mappiamo Users a DTOUser
+    }
 
-        public async Task<Users> GetUserByIdAsync(int id)
-        {
-            return await _userRepository.GetUserByIdAsync(id);
-        }
-        public async Task AddUserAsync(Users user)
-        {
-            await _userRepository.AddUserAsync(user);
-        }
+    public async Task AddUserAsync(DTOUser userDTO)
+    {
+        var user = _mapper.Map<Users>(userDTO);  // Mappiamo DTOUser a Users
+        await _userRepository.AddUserAsync(user);
+    }
 
-        public async Task UpdateUserAsync(Users user)
-        {
-            await _userRepository.UpdateUserAsync(user);
-        }
+    public async Task UpdateUserAsync(DTOUser userDTO)
+    {
+        var user = _mapper.Map<Users>(userDTO);  // Mappiamo DTOUser a Users
+        await _userRepository.UpdateUserAsync(user);
+    }
 
-        public async Task DeleteUserAsync(int id)
-        {
-            await _userRepository.DeleteUserAsync(id);
-        }
+    public async Task DeleteUserAsync(int id)
+    {
+        await _userRepository.DeleteUserAsync(id);
     }
 }

@@ -9,4 +9,8 @@ public interface IOrderRepository : IGenericRepository<Orders>
     Task AddOrderAsync(Orders order);
     Task UpdateOrderAsync(Orders order);
     Task DeleteOrderAsync(int id);
+
+    Task<Products> GetProductByIdAsync(int productId);
+    Task UpdateProductAsync(Products product);
+
 }

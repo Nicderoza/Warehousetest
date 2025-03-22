@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Warehouse.Data.Models
 {
-    public class Users
+    public class Users 
     {
-        public int IDUser { get; set; }
-        public required string Name { get; set; }
-        public required string Surname { get; set; }
-        public required string Email { get; set; }
-        public DateTime BirthDate { get; set; }
-        public ICollection<Orders> Orders { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]  // Indica che UserID è auto-incrementale
+        public int UserID { get; set; }
 
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Email { get; set; }
+        public DateTime BirthDate { get; set; }
+
+        public ICollection<Orders> Orders { get; set; }
     }
 }
-

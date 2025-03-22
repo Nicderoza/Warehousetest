@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Warehouse.Common\Warehouse.Common.csproj" />
     <ProjectReference Include="..\Warehouse.Data\Warehouse.Data.csproj" />
     <ProjectReference Include="..\Warehouse.Service\Warehouse.Service.csproj" />
   </ItemGroup>

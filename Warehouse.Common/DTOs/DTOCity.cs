@@ -2,7 +2,7 @@
 {
     public class DTOCity
     {
-        public int IdCity { get; set; }
+        public int CityID { get; set; }
         public string Name { get; set; }
     }
 }

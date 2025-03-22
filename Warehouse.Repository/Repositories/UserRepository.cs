@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Warehouse.Data;
+﻿using Warehouse.Data;
 using Warehouse.Data.Models;
 using Warehouse.Interfaces.IRepositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Warehouse.Repository.Repositories
 {
@@ -15,31 +11,36 @@ namespace Warehouse.Repository.Repositories
         {
         }
 
-        public Task AddUserAsync(Users user)
+        public async Task<IEnumerable<Users>> GetAllUsersAsync()
         {
-            throw new NotImplementedException();
+            return await _dbSet.ToListAsync();
         }
 
-        public Task DeleteUserAsync(int id)
+        public async Task<Users> GetUserByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FirstOrDefaultAsync(u => u.UserID == id);
         }
 
-        public Task<IEnumerable<Users>> GetAllUsersAsync()
+        public async Task AddUserAsync(Users user)
         {
-            throw new NotImplementedException();
+            await AddAsync(user);
         }
 
-        public Task<Users> GetUserByIdAsync(int id)
+        public async Task UpdateUserAsync(Users user)
         {
-            throw new NotImplementedException();
+            await UpdateAsync(user);
         }
 
-        public Task UpdateUserAsync(Users user)
+        public async Task DeleteUserAsync(int id)
         {
-            throw new NotImplementedException();
+            // Troviamo l'utente per ID
+            var user = await GetUserByIdAsync(id);
+
+            // Se l'utente esiste, lo eliminiamo passando solo l'ID
+            if (user != null)
+            {
+                await DeleteAsync(id); // Qui, passiamo solo l'ID
+            }
         }
     }
-
 }
-

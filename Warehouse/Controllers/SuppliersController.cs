@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Warehouse.Data.Models;
+using Warehouse.Common.DTOs;
 using Warehouse.Interfaces.IServices;
 
-namespace Warehouse.API.Controllers
+namespace Warehouse.WEB.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -17,7 +17,7 @@ namespace Warehouse.API.Controllers
 
         // GET: api/suppliers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Suppliers>>> GetAllSuppliers()
+        public async Task<ActionResult<IEnumerable<DTOSupplier>>> GetAllSuppliers()
         {
             var suppliers = await _supplierService.GetAllSuppliersAsync();
             return Ok(suppliers);
@@ -25,7 +25,7 @@ namespace Warehouse.API.Controllers
 
         // GET: api/suppliers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Suppliers>> GetSupplierById(int id)
+        public async Task<ActionResult<DTOSupplier>> GetSupplierById(int id)
         {
             var supplier = await _supplierService.GetSupplierByIdAsync(id);
 
@@ -39,7 +39,7 @@ namespace Warehouse.API.Controllers
 
         // POST: api/suppliers
         [HttpPost]
-        public async Task<ActionResult> AddSupplier(Suppliers supplier)
+        public async Task<ActionResult> AddSupplier(DTOSupplier supplier)
         {
             if (supplier == null)
             {
@@ -47,14 +47,14 @@ namespace Warehouse.API.Controllers
             }
 
             await _supplierService.AddSupplierAsync(supplier);
-            return CreatedAtAction(nameof(GetSupplierById), new { id = supplier.IDSupplier }, supplier);
+            return CreatedAtAction(nameof(GetSupplierById), new { id = supplier.SupplierID }, supplier);
         }
 
         // PUT: api/suppliers/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateSupplier(int id, Suppliers supplier)
+        public async Task<ActionResult> UpdateSupplier(int id, DTOSupplier supplier)
         {
-            if (id != supplier.IDSupplier)
+            if (id != supplier.SupplierID)
             {
                 return BadRequest("Supplier ID mismatch");
             }

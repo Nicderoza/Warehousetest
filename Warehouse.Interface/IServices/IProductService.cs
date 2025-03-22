@@ -1,13 +1,13 @@
-﻿using Warehouse.Data.Models;
+﻿using Warehouse.Common.DTOs;
 
 namespace Warehouse.Interfaces.IServices
 {
     public interface IProductService
     {
-        Task<IEnumerable<Products>> GetAllProductsAsync();
-        Task<Products> GetProductByIdAsync(int id);
-        Task AddProductAsync(Products product);
-        Task UpdateProductAsync(Products product);
-        Task DeleteProductAsync(int id);
+        Task<IEnumerable<DTOProduct>> GetAllProductsAsync();  // Restituisce una lista di DTOProduct
+        Task<DTOProduct> GetProductByIdAsync(int id);        // Restituisce un DTOProduct
+        Task AddProductAsync(DTOProduct product);             // Accetta un DTOProduct
+        Task UpdateProductAsync(DTOProduct product);          // Accetta un DTOProduct
+        Task DeleteProductAsync(int id);                       // Accetta solo l'ID per eliminare
     }
 }

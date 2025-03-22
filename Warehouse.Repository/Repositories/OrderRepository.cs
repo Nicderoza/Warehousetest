@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Warehouse.Data;
 using Warehouse.Data.Models;
 using Warehouse.Interfaces.IRepositories;
@@ -7,18 +8,32 @@ namespace Warehouse.Repository.Repositories
 {
     public class OrderRepository : GenericRepository<Orders>, IOrderRepository
     {
+        private readonly WarehouseContext _context;
+
         public OrderRepository(WarehouseContext context) : base(context)
         {
-        }
-
-        public async Task<Orders> GetOrderByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);
+            _context = context;
         }
 
         public async Task<IEnumerable<Orders>> GetAllOrdersAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet
+                .Include(o => o.Product)
+                .Include(o => o.User)
+                .ToListAsync();
+        }
+
+        public async Task<Orders> GetOrderByIdAsync(int id)
+        {
+            return await _dbSet
+                .Include(o => o.Product)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.OrderID == id);
+        }
+
+        public async Task<Products> GetProductByIdAsync(int productId)
+        {
+            return await _context.Products.FindAsync(productId);
         }
 
         public async Task AddOrderAsync(Orders order)
@@ -28,7 +43,14 @@ namespace Warehouse.Repository.Repositories
 
         public async Task UpdateOrderAsync(Orders order)
         {
-            await UpdateAsync(order);
+            _dbSet.Update(order);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateProductAsync(Products product)
+        {
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteOrderAsync(int id)
@@ -36,13 +58,9 @@ namespace Warehouse.Repository.Repositories
             var order = await GetOrderByIdAsync(id);
             if (order != null)
             {
-                await DeleteAsync(order);
+                await DeleteAsync(order.OrderID); // Se DeleteAsync accetta un ID oppure await DeleteAsync(order); // Se DeleteAsync accetta un oggetto
             }
         }
 
-        private async Task DeleteAsync(Orders order)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -3,11 +3,11 @@ using Warehouse.Interfaces.IRepositories;
 using Warehouse.Interfaces.IServices;
 
 namespace Warehouse.Service.Services;
-public class CategoryServices : ICategoryService
+public class CategoryService : ICategoryService
 {
     private readonly ICategoryRepository _categoryRepository;
 
-    public CategoryServices(ICategoryRepository categoryRepository)
+    public CategoryService(ICategoryRepository categoryRepository)
     {
         _categoryRepository = categoryRepository;
     }

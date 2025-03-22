@@ -1,13 +1,13 @@
-﻿using Warehouse.Data.Models;
+﻿using Warehouse.Common.DTOs;
 
 namespace Warehouse.Interfaces.IServices
 {
     public interface IUserService
     {
-        Task<IEnumerable<Users>> GetAllUsersAsync();
-        Task<Users> GetUserByIdAsync(int id);
-        Task AddUserAsync(Users user);
-        Task UpdateUserAsync(Users user);
+        Task<IEnumerable<DTOUser>> GetAllUsersAsync();
+        Task<DTOUser> GetUserByIdAsync(int id);
+        Task AddUserAsync(DTOUser user);
+        Task UpdateUserAsync(DTOUser user);  // Questo è già sufficiente, non serve il metodo per Users
         Task DeleteUserAsync(int id);
     }
 }

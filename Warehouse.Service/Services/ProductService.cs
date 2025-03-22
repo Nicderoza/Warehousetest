@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using Warehouse.Common.DTOs;
 using Warehouse.Data.Models;
 using Warehouse.Interfaces.IRepositories;
 using Warehouse.Interfaces.IServices;
@@ -12,35 +9,41 @@ namespace Warehouse.Service.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Products>> GetAllProductsAsync()
+        public async Task<IEnumerable<DTOProduct>> GetAllProductsAsync()
         {
-            return await _productRepository.GetAllProductsAsync();
+            var products = await _productRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<DTOProduct>>(products);  // Usa AutoMapper per mappare le entità in DTO
         }
 
-        public async Task<Products> GetProductByIdAsync(int id)
+        public async Task<DTOProduct> GetProductByIdAsync(int id)
         {
-            return await _productRepository.GetProductByIdAsync(id);
+            var product = await _productRepository.GetByIdAsync(id);
+            return _mapper.Map<DTOProduct>(product);  // Mappa l'entità in DTO
         }
 
-        public async Task AddProductAsync(Products product)
+        public async Task AddProductAsync(DTOProduct product)
         {
-            await _productRepository.AddProductAsync(product);
+            var productEntity = _mapper.Map<Products>(product);  // Mappa il DTO in entità
+            await _productRepository.AddAsync(productEntity);
         }
 
-        public async Task UpdateProductAsync(Products product)
+        public async Task UpdateProductAsync(DTOProduct product)
         {
-            await _productRepository.UpdateProductAsync(product);
+            var productEntity = _mapper.Map<Products>(product);  // Mappa il DTO in entità
+            await _productRepository.UpdateAsync(productEntity);
         }
 
         public async Task DeleteProductAsync(int id)
         {
-            await _productRepository.DeleteProductAsync(id);
+            await _productRepository.DeleteAsync(id);
         }
     }
 }

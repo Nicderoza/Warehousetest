@@ -1,13 +1,12 @@
-﻿using Warehouse.Data.Models;
+﻿using Warehouse.Common.DTOs;
+namespace Warehouse.Interfaces.IServices;
 
-namespace Warehouse.Interfaces.IServices
+public interface IOrderService
 {
-    public interface IOrderService
-    {
-        Task<IEnumerable<Orders>> GetAllOrdersAsync();
-        Task<Orders> GetOrderByIdAsync(int id);
-        Task AddOrderAsync(Orders order);
-        Task UpdateOrderAsync(Orders order);
-        Task DeleteOrderAsync(int id);
-    }
+    Task<IEnumerable<DTOOrder>> GetAllOrdersAsync();
+    Task<DTOOrder?> GetOrderByIdAsync(int id);
+    Task AddOrderAsync(DTOOrder order);
+    Task UpdateOrderAsync(DTOOrder order);
+    Task DeleteOrderAsync(int id);
 }
+

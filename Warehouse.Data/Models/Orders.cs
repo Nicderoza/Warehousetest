@@ -1,18 +1,22 @@
-﻿namespace Warehouse.Data.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Warehouse.Data.Models
 {
     public class Orders
     {
-        public int IDOrder { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int OrderID { get; set; }
+
         public DateTime OrderDate { get; set; }
-        public int? IDClient { get; set; }
-        public int? IDCourier { get; set; }
+        public int UserID { get; set; }
         public string Status { get; set; }
+        public int Quantity { get; set; }  // ✅ AGGIUNTO CAMPO QUANTITY
+        public decimal Price { get; set; }
 
-        public Users? Client { get; set; }  // Assuming Client is a navigation property
-        public int IdUser { get; set; }
-        public Users User { get; set; }  // Navigation property to Users
-
-        public int IdProduct { get; set; }
-        public Products Product { get; set; }  // Navigation property to Products
+        public Users User { get; set; }
+        public int ProductID { get; set; }
+        public Products Product { get; set; }
     }
 }

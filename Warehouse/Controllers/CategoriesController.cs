@@ -3,15 +3,15 @@ using Warehouse.Interfaces.IServices;
 using Warehouse.Common.DTOs;
 using Warehouse.Data.Models;
 
-namespace Warehouse.Controllers
+namespace Warehouse.WEB.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }
@@ -21,7 +21,7 @@ namespace Warehouse.Controllers
         public async Task<ActionResult<IEnumerable<DTOCategory>>> GetAllCategories()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
-            var categoryDTOs = categories.Select(c => new DTOCategory { IdCategory = c.IDCategory, Name = c.CategoryName });
+            var categoryDTOs = categories.Select(c => new DTOCategory { CategoryID = c.CategoryID, CategoryName = c.CategoryName });
             return Ok(categoryDTOs);
         }
 
@@ -35,7 +35,7 @@ namespace Warehouse.Controllers
                 return NotFound();
             }
 
-            var categoryDTO = new DTOCategory { IdCategory = category.IDCategory, Name = category.CategoryName };
+            var categoryDTO = new DTOCategory { CategoryID = category.CategoryID, CategoryName = category.CategoryName };
             return Ok(categoryDTO);
         }
 
@@ -45,27 +45,27 @@ namespace Warehouse.Controllers
         {
             var category = new Categories
             {
-                IDCategory = dtoCategory.IdCategory,
-                CategoryName = dtoCategory.Name
+                CategoryID = dtoCategory.CategoryID,
+                CategoryName = dtoCategory.CategoryName
             };
 
             await _categoryService.AddCategoryAsync(category);
-            return CreatedAtAction(nameof(GetCategoryById), new { id = category.IDCategory }, dtoCategory);
+            return CreatedAtAction(nameof(GetCategoryById), new { id = category.CategoryID }, dtoCategory);
         }
 
         // PUT: api/Category/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] DTOCategory dtoCategory)
         {
-            if (id != dtoCategory.IdCategory)
+            if (id != dtoCategory.CategoryID)
             {
                 return BadRequest("ID mismatch");
             }
 
             var category = new Categories
             {
-                IDCategory = dtoCategory.IdCategory,
-                CategoryName = dtoCategory.Name
+                CategoryID = dtoCategory.CategoryID,
+                CategoryName = dtoCategory.CategoryName
             };
 
             await _categoryService.UpdateCategoryAsync(category);

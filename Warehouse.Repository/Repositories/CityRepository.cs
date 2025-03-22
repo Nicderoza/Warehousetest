@@ -25,5 +25,19 @@ namespace Warehouse.Repository.Repositories
         {
             return await _dbSet.FindAsync(id);
         }
+        public async Task UpdateAsync(Cities entity)
+        {
+            // Verifica che l'entità esista già nel contesto
+            var existingEntity = await _context.Cities.FindAsync(entity.CityID);
+
+            if (existingEntity != null)
+            {
+                // Stacca l'entità già tracciata
+                _context.Entry(existingEntity).State = EntityState.Detached;
+            }
+
+            _dbSet.Update(entity);  // Aggiorna l'entità
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Warehouse.Data.Models;
 
 public class Suppliers
 {
-
-    public int IDSupplier { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int SupplierID { get; set; }
     public string Name { get; set; }
-    public int IDCity { get; set; }
+
+    public int CityID { get; set; }
     public Cities City { get; set; }
 
     public ICollection<Products> Products { get; set; }

@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Warehouse.Data.Models;
 using Warehouse.Interfaces.IServices;
 using Warehouse.Common.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Warehouse.WEB.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CityController : ControllerBase
+    public class CitiesController : ControllerBase
     {
         private readonly ICityService _cityService;
 
-        public CityController(ICityService cityService)
+        public CitiesController(ICityService cityService)
         {
             _cityService = cityService;
         }
@@ -21,9 +22,7 @@ namespace Warehouse.WEB.Controllers
         public async Task<ActionResult<IEnumerable<DTOCity>>> GetAllCities()
         {
             var cities = await _cityService.GetAllCitiesAsync();
-            var cityDTOs = cities.Select(c => new DTOCity { IdCity = c.IDCity, Name = c.Name });
-
-            return Ok(cityDTOs);
+            return Ok(cities);  // Restituisce una lista di DTOCity
         }
 
         // GET: api/city/{id}
@@ -36,8 +35,7 @@ namespace Warehouse.WEB.Controllers
                 return NotFound(new { message = "City not found" });
             }
 
-            var cityDTO = new DTOCity { IdCity = city.IDCity, Name = city.Name };
-            return Ok(cityDTO);
+            return Ok(city);  // Restituisce il DTO della città
         }
 
         // POST: api/city
@@ -49,17 +47,22 @@ namespace Warehouse.WEB.Controllers
                 return BadRequest(new { message = "Invalid city data" });
             }
 
-            var city = new Cities { IDCity = cityDTO.IdCity, Name = cityDTO.Name };
-            await _cityService.AddCityAsync(city);
+            // Verifica se la città esiste già
+            var existingCity = await _cityService.GetCityByIdAsync(cityDTO.CityID);
+            if (existingCity != null)
+            {
+                return Conflict(new { message = "City with this ID already exists" });
+            }
 
-            return CreatedAtAction(nameof(GetCityById), new { id = city.IDCity }, cityDTO);
+            await _cityService.AddCityAsync(cityDTO);
+            return CreatedAtAction(nameof(GetCityById), new { id = cityDTO.CityID }, cityDTO);
         }
 
         // PUT: api/city/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateCity(int id, [FromBody] DTOCity cityDTO)
         {
-            if (cityDTO == null || id != cityDTO.IdCity)
+            if (cityDTO == null || id != cityDTO.CityID)
             {
                 return BadRequest(new { message = "Invalid city data" });
             }
@@ -70,9 +73,7 @@ namespace Warehouse.WEB.Controllers
                 return NotFound(new { message = "City not found" });
             }
 
-            existingCity.Name = cityDTO.Name;
-            await _cityService.UpdateCityAsync(existingCity);
-
+            await _cityService.UpdateCityAsync(cityDTO);
             return NoContent();
         }
 
@@ -91,4 +92,3 @@ namespace Warehouse.WEB.Controllers
         }
     }
 }
-

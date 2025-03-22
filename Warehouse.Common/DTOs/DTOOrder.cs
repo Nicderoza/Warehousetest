@@ -2,11 +2,12 @@
 {
     public class DTOOrder
     {
-        public int IDOrder { get; set; }
+        public int OrderID { get; set; }
         public DateTime OrderDate { get; set; }
-        public int? IDClient { get; set; }
-        public int? IDCourier { get; set; }
+        public int UserID { get; set; }
         public string Status { get; set; }
-        public int IdProduct { get; set; }
+        public decimal Price { get; set; }
+        public int ProductID { get; set; }
+        public int Quantity { get; set; }  
     }
 }

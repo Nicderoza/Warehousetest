@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Warehouse.Data;
 using Warehouse.Interfaces.IRepositories;
 
@@ -20,12 +15,12 @@ namespace Warehouse.Repository.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
@@ -38,19 +33,21 @@ namespace Warehouse.Repository.Repositories
 
         public async Task UpdateAsync(T entity)
         {
-            _dbSet.Update(entity);
+            _dbSet.Attach(entity);  // Attacca l'entità senza tracciarla nuovamente
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
             var entity = await _dbSet.FindAsync(id);
-            if (entity != null)
+            if (entity == null)
             {
-                _dbSet.Remove(entity);
-                await _context.SaveChangesAsync();
+                throw new Exception($"Entity with ID {id} not found.");
             }
+
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }
-

@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Warehouse.Data.Models
 {
     public class Categories
     {
-        public int IDCategory { get; set; }
+        [Key]  // Indica che CategoryID è la chiave primaria
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]  // Autoincremento
+        public int CategoryID { get; set; }
+
         public string? CategoryName { get; set; }
 
         public ICollection<Products> Products { get; set; }
     }
 }
-

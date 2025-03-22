@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Warehouse.Data.Models;
+using Warehouse.Common.DTOs;
 using Warehouse.Interfaces.IServices;
 
 namespace Warehouse.WEB.Controllers
@@ -9,65 +9,72 @@ namespace Warehouse.WEB.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+
         public UsersController(IUserService userService)
         {
             _userService = userService;
         }
+        // GET: api/users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Users>>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<DTOUser>>> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
+        // GET: api/users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Users>> GetUserById(int id)
+        public async Task<ActionResult<DTOUser>> GetUserById(int id)
         {
             var user = await _userService.GetUserByIdAsync(id);
+
             if (user == null)
             {
                 return NotFound();
             }
+
             return Ok(user);
         }
-        [HttpPost]
-        public async Task<ActionResult> AddUser(Users user)
-        {
-            if (User == null)
-            {
-                return BadRequest("utente assente");
-            }
-            await _userService.AddUserAsync(user);
-            return CreatedAtAction(nameof(GetUserById), new { id = user.IDUser }, user);
 
+        // POST: api/users
+        [HttpPost]
+        public async Task<ActionResult> AddUser(DTOUser user)
+        {
+            if (user == null)
+            {
+                return BadRequest("User data is null");
+            }
+
+            await _userService.AddUserAsync(user);
+            return CreatedAtAction(nameof(GetUserById), new { id = user.UserID }, user);
         }
+
+        // PUT: api/users/5
         [HttpPut("{id}")]
-         public async Task<ActionResult>UpdateUser(int id,Users user)
-         {
-            if (id != user.IDUser)
+        public async Task<ActionResult> UpdateUser(int id, DTOUser user)
+        {
+            if (id != user.UserID)
             {
                 return BadRequest("User ID mismatch");
             }
-            await _userService.UpdateUserAsync(user);
-            return NoContent();
-         }
-        [HttpDelete("{id}")]
 
-        public async Task<ActionResult> DeleteUser(int id)
-        {
-            var user = await _userService.GetUserByIdAsync(id);
-            if (user ==null)
-            {
-                return NotFound();
-            }
-            await _userService.DeleteUserAsync(id);
+            await _userService.UpdateUserAsync(user);
             return NoContent();
         }
 
+        // DELETE: api/users/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteUser(int id)
+        {
+            var user = await _userService.GetUserByIdAsync(id);
 
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await _userService.DeleteUserAsync(id);
+            return NoContent();
+        }
     }
-
 }
-
-
-

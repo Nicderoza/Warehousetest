@@ -2,8 +2,8 @@
 {
     public class DTOSupplier
     {
-        public int IdSupplier { get; set; }
+        public int SupplierID { get; set; }
         public string Name { get; set; }
-        public int IdCity { get; set; }
+        public int CityID { get; set; }
     }
 }
